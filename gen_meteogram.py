@@ -1,3 +1,5 @@
+#!/usr/bin/env python 
+
 import argparse
 import configparser
 import matplotlib.pyplot as plt
@@ -34,7 +36,7 @@ config.read(args.config)
 LAT = float(config.get("location", "latitude", fallback="40.5804"))
 LON = float(config.get("location", "longitude", fallback="-105.072"))
 OUTPUT_PATH = config.get(
-    "output", "filepath", fallback="/var/www/html/trmnl_meteogram.png"
+    "output", "filepath", fallback="trmnl_meteogram.png"
 )
 
 HOURS_AHEAD = 48  # Can be adjusted to 12, 24, 48, etc.
@@ -144,7 +146,7 @@ def plot_forecast(df):
     ax1.grid(True, linestyle='--', linewidth=0.5)
     
     fig.tight_layout()
-    plt.savefig("hourly_forecast_eink.png", dpi=100, bbox_inches="tight")
+    plt.savefig(OUTPUT_PATH, dpi=100, bbox_inches="tight")
 
 if __name__ == "__main__":
     forecast_url = get_forecast_url(LAT, LON)

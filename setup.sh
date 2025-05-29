@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -ex
 
 if [ "$EUID" -ne 0 ]; then
   echo "This script must be run as root. Re-running with sudo..."
@@ -13,7 +13,7 @@ if [ "$1" == "--test" ]; then
   echo "Running in TEST MODE: will install/upgrade venv but NOT create crontab entry."
 fi
 
-BASE_DIR="/opt/termnl-meteogram"
+BASE_DIR="/opt/trmnl-meteogram"
 VENV_PATH="$BASE_DIR/venv"
 CONFIG_FILE="$BASE_DIR/config.ini"
 SCRIPT_DEST="$BASE_DIR/gen_meteogram.py"
@@ -45,6 +45,9 @@ cp gen_meteogram.py "$SCRIPT_DEST"
 sed -i "1s|^.*$|#!$VENV_PATH/bin/python|" "$SCRIPT_DEST"
 chmod +x "$SCRIPT_DEST"
 
+echo "=== Copying config file to $SCRIPT_DEST ==="
+cp -f config.ini $BASE_DIR
+
 echo "=== Creating wrapper script at $WRAPPER ==="
 cat > "$WRAPPER" <<EOF
 #!/bin/bash
@@ -60,13 +63,10 @@ chown $(whoami):$(whoami) "$LOGFILE"
 chmod 644 "$LOGFILE"
 
 if [ "$TEST_MODE" = false ]; then
-  echo "=== Registering cron job for root ==="
-CRON_JOB="$CRON_SCHEDULE $WRAPPER >> $LOGFILE 2>&1"
-( crontab -u root -l 2>/dev/null | grep -v "$WRAPPER" ; echo "$CRON_JOB" ) | crontab -u root -
-
-echo "✅ Forecast script installed and scheduled."
-  echo "Output will be updated every 30 minutes and logged to $LOGFILE"
+  echo "=== Installing hourly anacron job ==="
+	install -m 0755 "$WRAPPER" /etc/cron.hourly/meteogram
 fi
+
 if [ "$TEST_MODE" = true ]; then
   echo "=== Running the forecast generator once in test mode ==="
   "$WRAPPER"

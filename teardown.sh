@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -ex
 
 # Ensure running as root
 if [ "$EUID" -ne 0 ]; then
@@ -9,13 +9,11 @@ fi
 
 # ===== Configuration: adjust these paths if your setup differs =====
 BASE_DIR="/opt/trmnl-meteogram"
-CRON_IDENTIFIER="run_forecast.sh"
 
-echo "=== Removing cron job from root's crontab ==="
-# Remove any lines containing the wrapper identifier
-(crontab -u root -l 2>/dev/null | grep -v "${CRON_IDENTIFIER}") | crontab -u root -
+echo "=== Removing hourly anacron job ==="
+rm -f /etc/cron.hourly/meteogram
 
-echo "=== Deleting folder at $BASEIDR  ==="
+echo "=== Deleting folder at $BASE_DIR  ==="
 rm -rf "$BASE_DIR"
 
 echo "=== Cleanup complete ==="
