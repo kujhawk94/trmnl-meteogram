@@ -94,6 +94,10 @@ def plot_forecast(df):
     # 2) Round bounds out to multiples of 5 °F
     ylim_min = math.floor(tmin / 5) * 5
     ylim_max = math.ceil(tmax  / 5) * 5
+    if ylim_min > 45:
+        ylim_min = 45
+    if ylim_max < 75:
+        ylim_max = 75
     ax1.set_ylim(ylim_min, ylim_max)
     
     # 3) Major ticks at every 10 °F (these get labels)
