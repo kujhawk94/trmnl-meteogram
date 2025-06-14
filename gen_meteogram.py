@@ -92,8 +92,8 @@ def plot_forecast(df):
     tmin, tmax = df["temperature"].min(), df["temperature"].max()
     
     # 2) Round bounds out to multiples of 5 °F
-    ylim_min = math.floor((tmin - 5) / 5) * 5
-    ylim_max = math.ceil((tmax + 5)  / 5) * 5
+    ylim_min = math.floor((tmin - 1) / 5) * 5
+    ylim_max = math.ceil((tmax + 1)  / 5) * 5
     if ylim_min > 45:
         ylim_min = 45
     if ylim_max < 75:
