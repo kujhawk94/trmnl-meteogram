@@ -92,8 +92,8 @@ def plot_forecast(df):
     tmin, tmax = df["temperature"].min(), df["temperature"].max()
     
     # 2) Round bounds out to multiples of 5 °F
-    ylim_min = math.floor(tmin / 5) * 5
-    ylim_max = math.ceil(tmax  / 5) * 5
+    ylim_min = math.floor((tmin - 5) / 5) * 5
+    ylim_max = math.ceil((tmax + 5)  / 5) * 5
     if ylim_min > 45:
         ylim_min = 45
     if ylim_max < 75:
@@ -122,7 +122,7 @@ def plot_forecast(df):
     if max_w <= 40:
         y2lim_max = 40
     else:
-        y2lim_max = math.ceil(max_w / 5.0) * 5
+        y2lim_max = math.ceil((max_w + 5) / 5.0) * 5
     ax2.set_ylim(0, y2lim_max)
     ticks = [i for i in range (10, int(y2lim_max)+1, 10) if i < max_w + 10]
     ax2.set_yticks(ticks)
