@@ -68,7 +68,7 @@ def fetch_hourly_forecast(forecast_url):
     r.raise_for_status()
     data = r.json()["properties"]["periods"]
     df = pd.DataFrame(data)
-    df["startTime"] = pd.to_datetime(df["startTime"])
+    df["startTime"] = pd.to_datetime(df["startTime"], utc=True)
 
     # Truncate to only the next HOURS_AHEAD
     now = pd.Timestamp.now(tz="UTC")
